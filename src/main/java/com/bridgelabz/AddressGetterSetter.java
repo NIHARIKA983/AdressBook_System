@@ -1,6 +1,5 @@
 package com.bridgelabz;
 
-
 public class AddressGetterSetter {
 
     String fname;
@@ -10,6 +9,7 @@ public class AddressGetterSetter {
     String city;
     String zip;
     String phone;
+    String email;
     public String getFname() {
         return fname;
     }
@@ -52,9 +52,25 @@ public class AddressGetterSetter {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-
-
-
+    @Override
+    public String toString() {
+        return "AddressGetterSetter{" +
+                "fname='" + fname + '\'' +
+                ", lname='" + lname + '\'' +
+                ", address='" + address + '\'' +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
+                ", zip='" + zip + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
 
