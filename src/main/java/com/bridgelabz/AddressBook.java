@@ -15,11 +15,15 @@ public class AddressBook {
         Scanner scanner = new Scanner(System.in);
         do {
             System.out.println("1.Add a contact");
+            System.out.println("2.Edit a contact");
             input = scanner.nextInt();
             switch(input)
             {
                 case 1:
                     object.Add();
+                    break;
+                case 2:
+                    object.Edit();
                     break;
                 default:System.out.println("Invalid option");
             }
@@ -27,5 +31,4 @@ public class AddressBook {
             ans=scanner.nextInt();
         }while(ans==1);
     }
-
 }
