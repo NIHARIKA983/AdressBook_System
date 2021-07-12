@@ -1,8 +1,8 @@
-com/bridgelabz/AddressGetterSetter.java
- com.bridgelabz.AddressGetterSetter
 com/bridgelabz/IAddress.java
  com.bridgelabz.IAddress
 com/bridgelabz/AddressService.java
  com.bridgelabz.AddressService
 com/bridgelabz/AddressBook.java
  com.bridgelabz.AddressBook
+com/bridgelabz/Contact.java
+ com.bridgelabz.Contact

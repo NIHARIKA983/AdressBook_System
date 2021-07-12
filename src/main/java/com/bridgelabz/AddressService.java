@@ -5,13 +5,13 @@ import java.util.Scanner;
 
 public class AddressService implements IAddress {
 
-    ArrayList<AddressGetterSetter> book =new ArrayList<>();
+    ArrayList<Contact> book =new ArrayList<>();
     Scanner s = new Scanner(System.in);
 
     @Override
     public void Add() {
 
-        AddressGetterSetter Info = new AddressGetterSetter();
+        Contact Info = new Contact();
         System.out.println("Enter First name:");
         Info.setFname(s.next());
         System.out.println("Enter last name:");
@@ -48,7 +48,7 @@ public class AddressService implements IAddress {
         {
             if(book.get(i).getPhone().equals(temp))
             {
-                AddressGetterSetter Info=new AddressGetterSetter();
+                Contact Info=new Contact();
                 System.out.println(temp);
                 System.out.println("Enter First name:");
                 Info.setFname(s.next());
@@ -72,6 +72,26 @@ public class AddressService implements IAddress {
                 break;
             }
 
+        }
+    }
+    @Override
+    public void Delete() {
+
+        String temp=null;
+        System.out.println("Enter the First name of the record you want to delete");
+        temp=s.next();
+        if(book.isEmpty())
+        {
+            System.out.println("No records to delete");
+            return;
+        }
+        for(int i=0;i<book.size();i++)
+        {
+            if(book.get(i).getFname().equals(temp))
+            {
+                book.remove(i);
+                break;
+            }
         }
     }
 }

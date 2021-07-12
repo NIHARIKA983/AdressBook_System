@@ -1,6 +1,6 @@
 package com.bridgelabz;
 
-public class AddressGetterSetter {
+public class Contact {
 
     String fname;
     String lname;
