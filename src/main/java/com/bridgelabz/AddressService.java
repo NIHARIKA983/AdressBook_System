@@ -1,17 +1,22 @@
 package com.bridgelabz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class AddressService implements IAddress {
 
     ArrayList<Contact> book =new ArrayList<>();
     Scanner s = new Scanner(System.in);
+    static HashMap<String, ArrayList<Contact>> personMap = new HashMap<String, ArrayList<Contact>>();
 
     @Override
     public void Add() {
 
         Contact Info = new Contact();
+        System.out.println("Enter address book name");
+        String addressBook = s.next();
+
         System.out.println("Enter First name:");
         Info.setFname(s.next());
         System.out.println("Enter last name:");
@@ -28,8 +33,11 @@ public class AddressService implements IAddress {
         Info.setPhone(s.next());
         System.out.println("Enter your Email:");
         Info.setEmail(s.next());
+
         book.add(Info);
+        personMap.put(addressBook, book);
         System.out.println(book);
+        System.out.println(personMap);
     }
 
     @Override
