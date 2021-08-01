@@ -16,7 +16,8 @@ public class AddressBookMain {
         do {
             System.out.println("\n\n*******************OPTIONS********************\n");
             System.out.println("1]Add Contact\n2]Edit Contact\n3]Delete Contact\n4]Go To Address Book\n5]Display Current AddressBook\n"
-                    + "6]Display All AddressBooks\n7]Search Person By City Or State In All Address Books\n8]Exit");
+                    + "6]Display All AddressBooks\n7]View Person by City or State in Current Address Book\n"
+                    + "8]Search Person By City Or State In All Address Books\n9]Exit");
             choice=userInput.nextInt();
             userInput.nextLine();
             switch(choice) {
@@ -49,18 +50,27 @@ public class AddressBookMain {
                 case 6: System.out.println("*******All Address Book Details*******\n");
                     display();
                     break;
-                case 7: System.out.println("Enter (C) to search by City\nEnter (S) to search by State\n");
+                case 7: System.out.println("Enter (C) to View by City\nEnter (S) to View by State\n");
                     String input=userInput.nextLine();
                     if(input.equalsIgnoreCase("C"))
-                        searchPersonByCity();
+                        addressbook.viewPersonByCity();
                     else if(input.equalsIgnoreCase("S"))
+                        addressbook.viewPersonByState();
+                    else
+                        System.out.println("Invalid Input!");
+                    break;
+                case 8: System.out.println("Enter (C) to search by City\nEnter (S) to search by State\n");
+                    String searchInput=userInput.nextLine();
+                    if(searchInput.equalsIgnoreCase("C"))
+                        searchPersonByCity();
+                    else if(searchInput.equalsIgnoreCase("S"))
                         searchPersonByState();
                     else
                         System.out.println("Invalid Input!");
                     break;
-                case 8:	System.exit(0);
+                case 9:	System.exit(0);
             }
-        }while(choice!=8);
+        }while(choice!=9);
     }
 
     public static boolean isKeyExists(String name) {

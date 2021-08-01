@@ -1,6 +1,8 @@
 package com.bridgelabz;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBook {
@@ -8,6 +10,8 @@ public class AddressBook {
 
     //Static variables
     static String firstName,lastName,address,city,state,zipCode,phoneNumber,email;
+    static HashMap<String,Person> cityToPerson = new HashMap<String,Person>();
+    static HashMap<String,Person> stateToPerson = new HashMap<String,Person>();
 
     public AddressBook() {
         contacts=new ArrayList<Person>();
@@ -55,6 +59,8 @@ public class AddressBook {
         }
         else {
             contacts.add(person);
+            cityToPerson.put(city, person);
+            stateToPerson.put(state, person);
             System.out.println("Added:- "+person);
         }
     }
@@ -134,7 +140,6 @@ public class AddressBook {
             return true;
         else
             return false;
-
     }
 
     public void editPerson() {
@@ -205,5 +210,37 @@ public class AddressBook {
         for(int i=0;i<contacts.size();i++) {
             System.out.println(contacts.get(i));
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "resource" })
+    public void viewPersonByCity() {
+        Scanner userInput=new Scanner(System.in);
+        System.out.print("Enter City name :");
+        String cityName=userInput.nextLine();
+        int flag=0;
+        for(Map.Entry record : cityToPerson.entrySet()){
+            if(cityName.equalsIgnoreCase((String)record.getKey())) {
+                flag=1;
+                System.out.println(record.getValue());
+            }
+        }
+        if(flag==0)
+            System.out.println("This City does not exists!");
+    }
+
+    @SuppressWarnings({ "rawtypes", "resource" })
+    public void viewPersonByState() {
+        Scanner userInput=new Scanner(System.in);
+        System.out.print("Enter State name :");
+        String stateName=userInput.nextLine();
+        int flag=0;
+        for(Map.Entry record : stateToPerson.entrySet()){
+            if(stateName.equalsIgnoreCase((String)record.getKey())) {
+                flag=1;
+                System.out.println(record.getValue());
+            }
+        }
+        if(flag==0)
+            System.out.println("This State does not exists!");
     }
 }
