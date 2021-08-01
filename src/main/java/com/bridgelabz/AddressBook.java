@@ -2,16 +2,18 @@ package com.bridgelabz;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AddressBook {
     ArrayList<Person>contacts;
 
     //Static variables
     static String firstName,lastName,address,city,state,zipCode,phoneNumber,email;
-    static HashMap<String,Person> cityToPerson = new HashMap<String,Person>();
-    static HashMap<String,Person> stateToPerson = new HashMap<String,Person>();
+    //non-static variables
+    HashMap<Person,String> personsInCity = new HashMap<Person,String>();
+    HashMap<Person,String> personsInState = new HashMap<Person,String>();
 
     public AddressBook() {
         contacts=new ArrayList<Person>();
@@ -26,6 +28,7 @@ public class AddressBook {
         return "AddressBook [contacts=" + contacts + "]\n";
     }
 
+    //method to add persons in an addressBook
     public void addPerson() {
         @SuppressWarnings("resource")
         Scanner userInput=new Scanner(System.in);
@@ -59,12 +62,13 @@ public class AddressBook {
         }
         else {
             contacts.add(person);
-            cityToPerson.put(city, person);
-            stateToPerson.put(state, person);
+            personsInCity.put(person,city);
+            personsInState.put(person, state);
             System.out.println("Added:- "+person);
         }
     }
 
+    //method to validate and enter proper first name
     public static void validateFirstName() {
         Scanner userInput=new Scanner(System.in);
         while(!firstName.matches("[A-Za-z]{3}[A-Za-z]*")) {
@@ -72,6 +76,8 @@ public class AddressBook {
             firstName=userInput.nextLine();
         }
     }
+
+    //method to validate and enter proper last name
     public static void validateLastName(){
         Scanner userInput=new Scanner(System.in);
         while(!lastName.matches("[A-Za-z]{3}[A-Za-z]*")) {
@@ -79,6 +85,8 @@ public class AddressBook {
             lastName=userInput.nextLine();
         }
     }
+
+    //method to validate and enter proper address
     public static void validateAddress() {
         Scanner userInput=new Scanner(System.in);
         while(!address.matches("^[a-zA-Z\\d\\s\\-\\_]*$")) {
@@ -87,6 +95,7 @@ public class AddressBook {
         }
     }
 
+    //method to validate and enter proper city name
     public static void validateCity() {
         Scanner userInput=new Scanner(System.in);
         while(!city.matches("^[a-zA-Z]*$")) {
@@ -95,6 +104,7 @@ public class AddressBook {
         }
     }
 
+    //method to validate and enter proper phone number
     public static void validatePhoneNumber() {
         Scanner userInput=new Scanner(System.in);
         while(!phoneNumber.matches("^[6-9]{1}\\d{9}")) {
@@ -102,6 +112,8 @@ public class AddressBook {
             phoneNumber=userInput.nextLine();
         }
     }
+
+    //method to validate and enter proper state name
     public static void validateState() {
         Scanner userInput=new Scanner(System.in);
         while(!state.matches("^[a-zA-Z\\s]*$")) {
@@ -109,6 +121,8 @@ public class AddressBook {
             state=userInput.nextLine();
         }
     }
+
+    //method to validate and enter proper zip code
     public static void validateZipCode() {
         Scanner userInput=new Scanner(System.in);
         while(!zipCode.matches("\\d{6}")) {
@@ -116,6 +130,8 @@ public class AddressBook {
             zipCode=userInput.nextLine();
         }
     }
+
+    //method to validate and enter proper email
     public static void validateEmail() {
         Scanner userInput=new Scanner(System.in);
         String EMAIL_REGEX ="^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
@@ -125,23 +141,21 @@ public class AddressBook {
         }
     }
 
+    //method to check for duplicate entry of a person in addressBook
     public boolean checkForDuplicateEntry(Person person) {
-        int flag=1;
-        if(contacts.size()==0)
+        if(contacts.isEmpty())
             return false;
-        for(int i=0;i<contacts.size();i++) {
-            Person personInList=(contacts.get(i));
-            if(person.equals(personInList)) {
-                flag=0;
-                break;
-            }
-        }
-        if(flag==0)
+        Person duplicatePerson = contacts.stream()
+                .filter(personInList->personInList.equals(person))
+                .findFirst()
+                .orElse(null);
+        if(duplicatePerson!=null)
             return true;
         else
             return false;
     }
 
+    //method to edit person details
     public void editPerson() {
         Scanner userInput=new Scanner(System.in);
         System.out.println("Enter name of the person to edit :");
@@ -183,6 +197,7 @@ public class AddressBook {
         }
     }
 
+    //method to delete a person from addressBook
     public void deletePerson() {
         Scanner userInput=new Scanner(System.in);
         System.out.println("Enter name of person to be deleted?");
@@ -200,47 +215,62 @@ public class AddressBook {
             System.out.println("This name does not exists!");
         }
     }
-
+    //method to display persons in current addressBook
     public void display() {
         System.out.println("\n*****************All Contacts************************");
-        if(contacts.size()==0) {
+        if(contacts.isEmpty()) {
             System.out.println("NO CONTACTS ADDED !");
             return;
         }
-        for(int i=0;i<contacts.size();i++) {
-            System.out.println(contacts.get(i));
+        contacts.stream().forEach(System.out::println);
+    }
+
+    //method to get persons in given city
+    public List<Person> getPersonsByCity(String cityName) {
+        List<Person> list = personsInCity.entrySet()
+                .stream()
+                .filter(city->city.getValue().equalsIgnoreCase(cityName))
+                .map(personInCity->personInCity.getKey())
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    //method to get persons in given state
+    public List<Person> getPersonsByState(String stateName) {
+        List<Person>list = personsInState.entrySet()
+                .stream()
+                .filter(state->state.getValue().equalsIgnoreCase(stateName))
+                .map(personInState->personInState.getKey())
+                .collect(Collectors.toList());
+        return list;
+    }
+
+    //method to display persons details in given list
+    public void displayNumberOfPersonsFound(List<Person>personsList,String name) {
+        if(personsList.isEmpty()) {
+            System.out.println("\""+name+"\" does not exists !");
+        }
+        else {
+            System.out.println("\nPersons Found in "+name+" are :\n");
+            personsList.forEach(System.out::println);
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "resource" })
-    public void viewPersonByCity() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.print("Enter City name :");
-        String cityName=userInput.nextLine();
-        int flag=0;
-        for(Map.Entry record : cityToPerson.entrySet()){
-            if(cityName.equalsIgnoreCase((String)record.getKey())) {
-                flag=1;
-                System.out.println(record.getValue());
-            }
-        }
-        if(flag==0)
-            System.out.println("This City does not exists!");
+    //method to count persons by city in an addressBook
+    public void countPersonsByCity(String cityName) {
+        List<Person>personsInCity=getPersonsByCity(cityName);
+        if(personsInCity.isEmpty())
+            System.out.println("City "+cityName+" Does Not Exists !");
+        else
+            System.out.println("Total No. Of Persons Found In "+cityName.toUpperCase()+" Are :"+personsInCity.stream().count());
     }
 
-    @SuppressWarnings({ "rawtypes", "resource" })
-    public void viewPersonByState() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.print("Enter State name :");
-        String stateName=userInput.nextLine();
-        int flag=0;
-        for(Map.Entry record : stateToPerson.entrySet()){
-            if(stateName.equalsIgnoreCase((String)record.getKey())) {
-                flag=1;
-                System.out.println(record.getValue());
-            }
-        }
-        if(flag==0)
-            System.out.println("This State does not exists!");
+    //method to count persons by state in an addressBook
+    public void countPersonsByState(String stateName) {
+        List<Person>personsInState=getPersonsByState(stateName);
+        if(personsInState.isEmpty())
+            System.out.println("State "+stateName+" Does Not Exists !");
+        else
+            System.out.println("Total No. Of Persons Found In "+stateName.toUpperCase()+" Are :"+personsInState.stream().count());
     }
 }

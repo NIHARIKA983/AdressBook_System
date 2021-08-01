@@ -37,8 +37,16 @@ public class Person {
         this.city = city;
     }
 
+    public String getCity() {
+        return city;
+    }
+
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public void setZipCode(String zipCode) {
