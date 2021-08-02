@@ -1,6 +1,7 @@
 package com.bridgelabz;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -217,7 +218,7 @@ public class AddressBook {
     }
     //method to display persons in current addressBook
     public void display() {
-        System.out.println("\n*****************All Contacts************************");
+        System.out.println("\n*****************All Contacts************************\n");
         if(contacts.isEmpty()) {
             System.out.println("NO CONTACTS ADDED !");
             return;
@@ -272,5 +273,14 @@ public class AddressBook {
             System.out.println("State "+stateName+" Does Not Exists !");
         else
             System.out.println("Total No. Of Persons Found In "+stateName.toUpperCase()+" Are :"+personsInState.stream().count());
+    }
+    //method to sort person by first name and last name
+    public void sortPersonsByName() {
+        List<Person> sortedList = contacts.stream()
+                .sorted(Comparator.comparing(Person::getFirstName)
+                        .thenComparing(Person::getLastName))
+                .collect(Collectors.toList());
+        System.out.println("\n--------- SORTED LIST OF PERSONS ------------\n");
+        sortedList.forEach(System.out::println);
     }
 }

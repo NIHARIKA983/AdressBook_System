@@ -18,7 +18,8 @@ public class AddressBookMain {
             System.out.println("\n\n*******************OPTIONS********************\n");
             System.out.println("1]Add Contact\n2]Edit Contact\n3]Delete Contact\n4]Go To Address Book\n5]Display Current AddressBook\n"
                     + "6]Display All AddressBooks\n7]View Person by City or State In Current Address Book\n"
-                    + "8]Search Person By City Or State In All Address Books\n9]Count No. Of Persons by City Or State\n10]Exit");
+                    + "8]Search Person By City Or State In All Address Books\n9]Count No. Of Persons by City Or State\n"
+                    + "10]Sort Entries in AddressBook By Person's Name\n11]Exit");
             choice=userInput.nextInt();
             userInput.nextLine();
             switch(choice) {
@@ -43,9 +44,11 @@ public class AddressBookMain {
                     break;
                 case 9: countPersonsByCityOrState();
                     break;
-                case 10: System.exit(0);
+                case 10: addressbook.sortPersonsByName();
+                    break;
+                case 11: System.exit(0);
             }
-        }while(choice!=10);
+        }while(choice!=11);
     }
 
     //method to check whether addressBook contains given name
