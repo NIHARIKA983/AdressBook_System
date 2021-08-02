@@ -19,7 +19,8 @@ public class AddressBookMain {
             System.out.println("1]Add Contact\n2]Edit Contact\n3]Delete Contact\n4]Go To Address Book\n5]Display Current AddressBook\n"
                     + "6]Display All AddressBooks\n7]View Person by City or State In Current Address Book\n"
                     + "8]Search Person By City Or State In All Address Books\n9]Count No. Of Persons by City Or State\n"
-                    + "10]Sort Entries in AddressBook By Person's Name\n11]Exit");
+                    + "10]Sort Entries in AddressBook By Person's Name\n11]Ability To Sort Entries In AddressBook"
+                    + " By City, State Or ZipCode\n12]Exit");
             choice=userInput.nextInt();
             userInput.nextLine();
             switch(choice) {
@@ -46,9 +47,11 @@ public class AddressBookMain {
                     break;
                 case 10: addressbook.sortPersonsByName();
                     break;
-                case 11: System.exit(0);
+                case 11: SortEntriesByCityOrStateOrZipcode();
+                    break;
+                case 12: System.exit(0);
             }
-        }while(choice!=11);
+        }while(choice!=12);
     }
 
     //method to check whether addressBook contains given name
@@ -167,5 +170,24 @@ public class AddressBookMain {
         }
         else
             System.out.println("Invalid Input!");
+    }
+    //method to select option to sort by city ,state or zipCode
+    public static void SortEntriesByCityOrStateOrZipcode() {
+        Scanner userInput=new Scanner(System.in);
+        System.out.println("Enter (C) to Sort by City\nEnter (S) to Sort by State\nEnter (Z) to Sort by ZipCode\n");
+        System.out.print("Enter your choice:");
+        String choice=userInput.nextLine();
+        switch(choice) {
+            case "C":
+            case "c":addressbook.sortPersonsByCity();
+                break;
+            case "S":
+            case "s":addressbook.sortPersonsByState();
+                break;
+            case "Z":
+            case "z":addressbook.sortPersonsByZipCode();
+                break;
+            default : System.out.println("Invalid Input");
+        }
     }
 }

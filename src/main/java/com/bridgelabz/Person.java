@@ -61,6 +61,9 @@ public class Person {
         this.zipCode = zipCode;
     }
 
+    public int getZipCode() {
+        return Integer.parseInt(zipCode);
+    }
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
