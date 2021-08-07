@@ -1,5 +1,9 @@
 package com.bridgelabz;
 
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+
+import java.io.IOException;
 import java.util.*;
 
 public class AddressBookMain {
@@ -17,9 +21,11 @@ public class AddressBookMain {
             System.out.println("4. Search Contact Data");
             System.out.println("5. View Contact Data");
             System.out.println("6. Count Contacts ");
-            System.out.println("7. Write data");
-            System.out.println("8. Read data");
-            System.out.println("9. Exit");
+            System.out.println("7. Write data into text File");
+            System.out.println("8. Read data from text File");
+            System.out.println("9. Write data into CSV File");
+            System.out.println("10. Read data from CSV File");
+            System.out.println("11. Exit");
             System.out.print("Enter Your choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -28,7 +34,7 @@ public class AddressBookMain {
                     System.out.println("Enter Name of new Address Book: ");
                     String bookName = sc.next();
                     sc.nextLine();
-                    addressBookMap.put(bookName, new AddressBook());//adding bookname as a key and value is allocating memory for addressbook obj
+                    addressBookMap.put(bookName, new AddressBook());//adding bookname as a key and vlue is allocating memory for addressbook obj
                     addressBook.addressBookOptions(addressBookMap.get(bookName));//call addressbook option method with passing key of hashmap
                     break;
                 case 2:
@@ -75,6 +81,20 @@ public class AddressBookMain {
                     System.out.println(addressBookFileIO2.readData());
                     break;
                 case 9:
+                    try {
+                        AddressBookCSV.writeDataToCSV();
+                    }catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 10:
+                    try {
+                        AddressBookCSV.readDataFromCSV();
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 11:
                     sc.close();//for closing the Scanner Class
                     return;
                 default:
