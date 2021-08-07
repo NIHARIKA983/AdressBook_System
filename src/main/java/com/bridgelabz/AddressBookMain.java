@@ -1,193 +1,86 @@
 package com.bridgelabz;
 
 import java.util.*;
-import java.util.stream.*;
 
 public class AddressBookMain {
-    static HashMap<String,AddressBook>addressbooks=new HashMap<String,AddressBook>();
-    static AddressBook addressbook=new AddressBook();
 
     public static void main(String[] args) {
-        System.out.println("Welcome to Address Book Program !!!");
-        @SuppressWarnings("resource")
-        Scanner userInput=new Scanner(System.in);
-        int choice;
-        String addressBookName = "Default";
-        addressbooks.put(addressBookName,addressbook);
-        do {
-            System.out.println("\n\n*******************OPTIONS********************\n");
-            System.out.println("1]Add Contact\n2]Edit Contact\n3]Delete Contact\n4]Go To Address Book\n5]Display Current AddressBook\n"
-                    + "6]Display All AddressBooks\n7]View Person by City or State In Current Address Book\n"
-                    + "8]Search Person By City Or State In All Address Books\n9]Count No. Of Persons by City Or State\n"
-                    + "10]Sort Entries in AddressBook By Person's Name\n11]Ability To Sort Entries In AddressBook"
-                    + " By City, State Or ZipCode\n12]Exit");
-            choice=userInput.nextInt();
-            userInput.nextLine();
-            switch(choice) {
-                case 1: addressbook.addPerson();
-                    addressbook.display();
+        Scanner sc = new Scanner(System.in);
+        AddressBook addressBook = new AddressBook();
+        Map<String, AddressBook> addressBookMap = new HashMap<String,AddressBook>();
+
+        while (true) {
+            System.out.println("\n--------------------------Welcome to Address Book System--------------------------");
+            System.out.println("1. New Address Book");
+            System.out.println("2. Select Address Book");
+            System.out.println("3. Delete Address Book");
+            System.out.println("4. Search Contact Data");
+            System.out.println("5. View Contact Data");
+            System.out.println("6. Count Contacts ");
+            System.out.println("7. Write data");
+            System.out.println("8. Read data");
+            System.out.println("9. Exit");
+            System.out.print("Enter Your choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Name of new Address Book: ");
+                    String bookName = sc.next();
+                    sc.nextLine();
+                    addressBookMap.put(bookName, new AddressBook());//adding bookname as a key and value is allocating memory for addressbook obj
+                    addressBook.addressBookOptions(addressBookMap.get(bookName));//call addressbook option method with passing key of hashmap
                     break;
-                case 2: addressbook.editPerson();
-                    addressbook.display();
+                case 2:
+                    System.out.println("List of available Address Book : ");
+                    Set keys = addressBookMap.keySet();//retrived keys from hashmap to show addressbooklist
+                    Iterator i = keys.iterator();
+                    while (i.hasNext()){
+                        System.out.println(i.next());
+                    }
+                    System.out.println("Enter Address Book name you want to Open : ");
+                    String name = sc.nextLine();
+                    System.out.println("Current Address Book is : " + name);
+                    addressBook.addressBookOptions(addressBookMap.get(name));//call method with passing address book name
                     break;
-                case 3: addressbook.deletePerson();
-                    addressbook.display();
+                case 3:
+                    System.out.println("List of available Address Book : ");
+                    Set keys1 = addressBookMap.keySet();//retrived keys from hashmap to show addressbooklist
+                    Iterator i1 = keys1.iterator();
+                    while (i1.hasNext()){
+                        System.out.println(i1.next());
+                    }
+                    System.out.println("Enter Address Book name to be delete: ");
+                    name = sc.nextLine();
+                    addressBookMap.remove(name);//delete hashmap using remove fun
                     break;
-                case 4: selectAddressBook();
+                case 4:
+                    System.out.println("Welcome to the search option:");
+                    addressBook.searchByOptions();
                     break;
-                case 5: addressbook.display();
+                case 5:
+                    System.out.println("Welcome to view By Option:");
+                    addressBook.viewByOption(addressBookMap);
                     break;
-                case 6: display();
+                case 6:
+                    System.out.println("Welcome to the couter");
+                    addressBook.countByOption();
                     break;
-                case 7: viewPersonsByCityOrState();
+                case 7:
+                    AddressBookFileIO addressBookFileIO = new AddressBookFileIO();
+                    addressBookFileIO.writeData(addressBookMap);
                     break;
-                case 8: searchPersonsByCityOrState();
+                case 8:
+                    AddressBookFileIO addressBookFileIO2 = new AddressBookFileIO();
+                    System.out.println(addressBookFileIO2.readData());
                     break;
-                case 9: countPersonsByCityOrState();
+                case 9:
+                    sc.close();//for closing the Scanner Class
+                    return;
+                default:
+                    System.out.println("You Entered Invalid Choice....!");
                     break;
-                case 10: addressbook.sortPersonsByName();
-                    break;
-                case 11: SortEntriesByCityOrStateOrZipcode();
-                    break;
-                case 12: System.exit(0);
             }
-        }while(choice!=12);
-    }
-
-    //method to check whether addressBook contains given name
-    public static boolean isKeyExists(String name) {
-        return addressbooks.containsKey(name);
-    }
-
-    //method to display all addressBook records
-    public static void display() {
-        System.out.println("*******All Address Book Details*******\n");
-        addressbooks.entrySet().stream().forEach(book->{
-            System.out.println("\""+book.getKey()+"\""+" "+book.getValue());
-        });
-    }
-
-    //method to select or create a new addressBook
-    public static void selectAddressBook(){
-        Scanner userInput=new Scanner(System.in);
-        System.out.println("Enter name of Address Book:");
-        String addressbookName=userInput.nextLine();
-        if(isKeyExists(addressbookName)) {
-            System.out.println("This addressbook already exists!");
-            System.out.println("Entering '"+addressbookName+"' addressbook........");
-            addressbook=addressbooks.get(addressbookName);
-        }
-        else {
-            System.out.println("Creating New AddressBook........");
-            AddressBook tempAddressBook=new AddressBook();
-            addressbooks.put(addressbookName, tempAddressBook);
-            addressbook=tempAddressBook;
-            System.out.println("Welcome to '"+addressbookName+"' addressbook");
-        }
-    }
-
-    //method to search person by city in all addressBooks
-    public static void searchPersonByCity() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.print("Enter city name :");
-        String cityName=userInput.nextLine();
-        List<Person> list = addressbooks.values()
-                .stream()
-                .map(addressbook->addressbook.getContacts())
-                .flatMap(List::stream)
-                .filter(city->city.getCity().equalsIgnoreCase(cityName))
-                .collect(Collectors.toList());
-        if(list.isEmpty())
-            System.out.println("This City does not exists!");
-        else
-            list.forEach(System.out::println);
-    }
-
-    //method to search person by state in all adrressBooks
-    public static void searchPersonByState() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.print("Enter State name :");
-        String stateName=userInput.nextLine();
-        List<Person> list = addressbooks.values().stream()
-                .map(addressbook->addressbook.getContacts())
-                .flatMap(List::stream)
-                .filter(state->state.getState().equalsIgnoreCase(stateName))
-                .collect(Collectors.toList());
-        if(list.isEmpty())
-            System.out.println("This State does not exists!");
-        else
-            list.forEach(System.out::println);
-    }
-
-    //method to select options to view persons in city or state
-    public static void viewPersonsByCityOrState() {
-        System.out.println("Enter (C) to View by City\nEnter (S) to View by State\n");
-        Scanner userInput=new Scanner(System.in);
-        String input=userInput.nextLine();
-        if(input.equalsIgnoreCase("C")) {
-            System.out.print("Enter City Name :");
-            String cityName=userInput.nextLine();
-            List<Person>personsList=addressbook.getPersonsByCity(cityName);
-            addressbook.displayNumberOfPersonsFound(personsList,cityName);
-        }
-        else if(input.equalsIgnoreCase("S")) {
-            System.out.print("Enter State Name :");
-            String stateName=userInput.nextLine();
-            List<Person>personsList=addressbook.getPersonsByState(stateName);
-            addressbook.displayNumberOfPersonsFound(personsList,stateName);
-        }
-        else
-            System.out.println("Invalid Input!");
-    }
-
-    //method to select options to search persons in city or state
-    public static void searchPersonsByCityOrState() {
-        System.out.println("Enter (C) to search by City\nEnter (S) to search by State\n");
-        Scanner userInput=new Scanner(System.in);
-        String searchInput=userInput.nextLine();
-        if(searchInput.equalsIgnoreCase("C"))
-            searchPersonByCity();
-        else if(searchInput.equalsIgnoreCase("S"))
-            searchPersonByState();
-        else
-            System.out.println("Invalid Input!");
-    }
-
-    //method to select options to count by city or by state
-    public static void countPersonsByCityOrState() {
-        System.out.println("Enter (C) to Count by City\nEnter (S) to Count by State\n");
-        Scanner userInput=new Scanner(System.in);
-        String input=userInput.nextLine();
-        if(input.equalsIgnoreCase("C")) {
-            System.out.print("Enter City Name :");
-            String cityName=userInput.nextLine();
-            addressbook.countPersonsByCity(cityName);
-        }
-        else if(input.equalsIgnoreCase("S")) {
-            System.out.print("Enter State Name :");
-            String stateName=userInput.nextLine();
-            addressbook.countPersonsByState(stateName);
-        }
-        else
-            System.out.println("Invalid Input!");
-    }
-    //method to select option to sort by city ,state or zipCode
-    public static void SortEntriesByCityOrStateOrZipcode() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.println("Enter (C) to Sort by City\nEnter (S) to Sort by State\nEnter (Z) to Sort by ZipCode\n");
-        System.out.print("Enter your choice:");
-        String choice=userInput.nextLine();
-        switch(choice) {
-            case "C":
-            case "c":addressbook.sortPersonsByCity();
-                break;
-            case "S":
-            case "s":addressbook.sortPersonsByState();
-                break;
-            case "Z":
-            case "z":addressbook.sortPersonsByZipCode();
-                break;
-            default : System.out.println("Invalid Input");
         }
     }
 }

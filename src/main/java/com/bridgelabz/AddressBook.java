@@ -1,313 +1,293 @@
 package com.bridgelabz;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AddressBook {
-    ArrayList<Person>contacts;
+    public static final ArrayList<Contact> contactList = new ArrayList<>();
+    public static Map<String, Contact> nameHashMap = new HashMap<String, Contact>();
+    public static Map<String, Contact> cityHashMap = new HashMap<String, Contact>();
+    public static Map<String, Contact> stateHashMap = new HashMap<String, Contact>();
+    static Scanner sc = new Scanner(System.in);
+    static AddressBook addressBook = new AddressBook();
 
-    //Static variables
-    static String firstName,lastName,address,city,state,zipCode,phoneNumber,email;
-    //non-static variables
-    HashMap<Person,String> personsInCity = new HashMap<Person,String>();
-    HashMap<Person,String> personsInState = new HashMap<Person,String>();
-
-    public AddressBook() {
-        contacts=new ArrayList<Person>();
+    public static boolean addContact(Contact contact) {
+        List<Contact> checkByName = searchByName(contact.getfName());
+        for (Contact equalName : checkByName) {
+            if (equalName.equals(contact))
+                return false;
+        }
+        contactList.add(contact);
+        nameHashMap.put(contact.getfName(), contact);
+        cityHashMap.put(contact.getCity(), contact);
+        stateHashMap.put(contact.getState(),contact);
+        return true;
     }
-
-    public ArrayList<Person> getContacts() {
-        return contacts;
+    //method for search contact by name
+    public static List<Contact> searchByName(String name) {//collection list of element
+        //stream and lambda for find filter given name from arraylist
+        return contactList.stream().filter(person -> person.getfName().equalsIgnoreCase(name)).collect(Collectors.toList());
     }
-
+    //method for search contact by City
+    public static List<Contact> searchByCity(String city) {
+        return contactList.stream().filter(person -> person.getCity().equalsIgnoreCase(city)).collect(Collectors.toList());
+    }
+    //method for search contact by State
+    public static List<Contact> searchByState(String state) {
+        return contactList.stream().filter(person -> person.getState().equalsIgnoreCase(state)).collect(Collectors.toList());
+    }
+    //method for view contact by name
+    public static void viewByName(Map<String, Contact> nameHashMap) {
+        nameHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "="+ e.getValue().toString()));
+    }
+    //method for view contact by city
+    public static void viewByCity(Map<String, Contact> cityHashMap) {
+        cityHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "="+ e.getValue().toString()));
+    }
+    //method for view contact by State
+    public static void viewByState(Map<String, Contact> stateHashMap) {
+        stateHashMap.entrySet().stream().forEach(e -> System.out.println(e.getKey() + "="+ e.getValue().toString()));
+    }
+    //method for sort contact by name, city, state
+    public List<Contact> sortBy(Function<? super Contact, ? extends String> key) {
+        return contactList.stream().sorted(Comparator.comparing(key)).collect(Collectors.toList());
+    }
+    //method for sort contact by zip
+    public List<Contact> sortByZip(Function<? super Contact, ? extends Long> key) {
+        return contactList.stream().sorted(Comparator.comparing(key)).collect(Collectors.toList());
+    }
+    //method for edit contact
+    public static boolean editContact(Contact current, Contact editedContact) {
+        if (!contactList.contains(current)){
+            return false;
+        }
+        contactList.remove(current);
+        contactList.add(editedContact);
+        return true;
+    }
+    //method for delete contact
+    public static boolean deleteContact(Contact contacts) {
+        contactList.remove(contacts);
+        return true;
+    }
+    //for showing output details
     @Override
     public String toString() {
-        return "AddressBook [contacts=" + contacts + "]\n";
-    }
-
-    //method to add persons in an addressBook
-    public void addPerson() {
-        @SuppressWarnings("resource")
-        Scanner userInput=new Scanner(System.in);
-        System.out.println("\nEnter First name :- ");
-        firstName=userInput.nextLine();
-        validateFirstName();
-        System.out.println("Enter Last name :- ");
-        lastName=userInput.nextLine();
-        validateLastName();
-        System.out.println("Enter Address :- ");
-        address=userInput.nextLine();
-        validateAddress();
-        System.out.println("Enter City :- ");
-        city=userInput.nextLine();
-        validateCity();
-        System.out.println("Enter State :- ");
-        state=userInput.nextLine();
-        validateState();
-        System.out.println("Enter Zip code :- ");
-        zipCode=userInput.nextLine();
-        validateZipCode();
-        System.out.println("Enter Contact number :- ");
-        phoneNumber=userInput.nextLine();
-        validatePhoneNumber();
-        System.out.println("Enter Email Id:-");
-        email=userInput.nextLine();
-        validateEmail();
-        Person person=new Person(firstName,lastName,address,city,state,zipCode,phoneNumber,email);
-        if(checkForDuplicateEntry(person)) {
-            System.out.println("This Contact Is Already Added.");
+        if (contactList.isEmpty())
+            return "No contacts found!";
+        String result = new String();
+        for (int i = 0; i < contactList.size(); i++) {
+            result += " " + contactList.get(i);
         }
-        else {
-            contacts.add(person);
-            personsInCity.put(person,city);
-            personsInState.put(person, state);
-            System.out.println("Added:- "+person);
-        }
+        return result;
     }
-
-    //method to validate and enter proper first name
-    public static void validateFirstName() {
-        Scanner userInput=new Scanner(System.in);
-        while(!firstName.matches("[A-Za-z]{3}[A-Za-z]*")) {
-            System.out.println("Minimum 3 characters required !\nEnter First name :- ");
-            firstName=userInput.nextLine();
-        }
+    //method for adding details
+    public static Contact readContact() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter First Name: ");
+        String firstName = sc.nextLine();
+        System.out.print("Enter Last Name: ");
+        String lastName = sc.nextLine();
+        System.out.print("Enter Address: ");
+        String address = sc.nextLine();
+        System.out.print("Enter City: ");
+        String city = sc.nextLine();
+        System.out.print("Enter State: ");
+        String state = sc.nextLine();
+        System.out.print("Enter Zip Code: ");
+        Long zip = sc.nextLong();
+        sc.nextLine();
+        System.out.print("Enter Phone Number: ");
+        Long phoneNum = sc.nextLong();
+        sc.nextLine();
+        System.out.print("Enter Email ID: ");
+        String email = sc.nextLine();
+        return new Contact(firstName, lastName, address, city, state, zip, phoneNum, email);
     }
-
-    //method to validate and enter proper last name
-    public static void validateLastName(){
-        Scanner userInput=new Scanner(System.in);
-        while(!lastName.matches("[A-Za-z]{3}[A-Za-z]*")) {
-            System.out.println("Minimum 3 characters required !\nEnter Last name :- ");
-            lastName=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper address
-    public static void validateAddress() {
-        Scanner userInput=new Scanner(System.in);
-        while(!address.matches("^[a-zA-Z\\d\\s\\-\\_]*$")) {
-            System.out.println("INVALID! \nEnter Address :- ");
-            address=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper city name
-    public static void validateCity() {
-        Scanner userInput=new Scanner(System.in);
-        while(!city.matches("^[a-zA-Z]*$")) {
-            System.out.println("INVALID!\nEnter City :- ");
-            city=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper phone number
-    public static void validatePhoneNumber() {
-        Scanner userInput=new Scanner(System.in);
-        while(!phoneNumber.matches("^[6-9]{1}\\d{9}")) {
-            System.out.println("INVALID !\nEnter Contact number :- ");
-            phoneNumber=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper state name
-    public static void validateState() {
-        Scanner userInput=new Scanner(System.in);
-        while(!state.matches("^[a-zA-Z\\s]*$")) {
-            System.out.println("INVALID!\nEnter State :- ");
-            state=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper zip code
-    public static void validateZipCode() {
-        Scanner userInput=new Scanner(System.in);
-        while(!zipCode.matches("\\d{6}")) {
-            System.out.println("INVALID!!\nEnter Zip code :- ");
-            zipCode=userInput.nextLine();
-        }
-    }
-
-    //method to validate and enter proper email
-    public static void validateEmail() {
-        Scanner userInput=new Scanner(System.in);
-        String EMAIL_REGEX ="^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
-        while(!email.matches(EMAIL_REGEX)) {
-            System.out.println("INVALID EMAIL ID !\n Enter Valid Email Id:-");
-            email=userInput.nextLine();
-        }
-    }
-
-    //method to check for duplicate entry of a person in addressBook
-    public boolean checkForDuplicateEntry(Person person) {
-        if(contacts.isEmpty())
-            return false;
-        Person duplicatePerson = contacts.stream()
-                .filter(personInList->personInList.equals(person))
-                .findFirst()
-                .orElse(null);
-        if(duplicatePerson!=null)
-            return true;
-        else
-            return false;
-    }
-
-    //method to edit person details
-    public void editPerson() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.println("Enter name of the person to edit :");
-        String name=userInput.nextLine();
-        int flag=0;
-        for(int i=0;i<contacts.size();i++) {
-            Person person=contacts.get(i);
-            if(name.equals(person.firstName)) {
-                System.out.println("Enter address :- ");
-                address=userInput.nextLine();
-                validateAddress();
-                person.setAddress(address);
-                System.out.println("Enter city :- ");
-                city=userInput.nextLine();
-                validateCity();
-                person.setCity(city);
-                System.out.println("Enter state :- ");
-                state=userInput.nextLine();
-                validateState();
-                person.setState(state);
-                System.out.println("Enter zip code :- ");
-                zipCode=userInput.nextLine();
-                validateZipCode();
-                person.setZipCode(zipCode);
-                System.out.println("Enter contact number :- ");
-                phoneNumber=userInput.nextLine();
-                validatePhoneNumber();
-                person.setPhoneNumber(phoneNumber);
-                System.out.println("Enter Email Id:-");
-                email=userInput.nextLine();
-                validateEmail();
-                person.setEmail(email);
-                flag=1;
-                System.out.println("Edited:- "+person);
+    //method for show option for contacts
+    public void addressBookOptions(AddressBook addressBook) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n-------------------------- Address Book Contact Option --------------------------");
+            System.out.println("1. Add contact details");
+            System.out.println("2. Edit contact details");
+            System.out.println("3. Delete contact details");
+            System.out.println("4. Show contacts details");
+            System.out.println("5. Sort Address Book");
+            System.out.println("6. Back to main menu");
+            System.out.print("Enter Your choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    if (addContact(readContact()))   //call addcontact with passing method readcontact
+                        System.out.println("Cotact Added Successfully....!");
+                    else
+                        System.out.println("Contact Already Exist....!");
+                    break;
+                case 2:
+                    System.out.println("Enter First name to edit contact: ");
+                    String name = sc.nextLine();
+                    List<Contact> equalName = searchByName(name);//list of equal first name
+                    if (equalName.isEmpty())//if not match found
+                        System.out.println("Data Not Found....!");
+                    else if (equalName.size() == 1) {//if only one equal match found
+                        editContact(equalName.get(0), readContact()); //call edit method with name and method parameter
+                        System.out.println("Contact data modified....!");
+                    }else {
+                        //if more than one firstname match found in equal name list
+                        equalName.forEach(x -> System.out.println(equalName.indexOf(x) + "  " + x.toString()));
+                        System.out.println("Enter index to edit : ");
+                        int i = sc.nextInt();
+                        sc.nextLine();
+                        editContact(equalName.get(i), readContact());
+                        System.out.println("Contact Modified....!");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Enter First name to delete contact: ");
+                    name = sc.nextLine();
+                    equalName = searchByName(name);
+                    if (equalName.isEmpty())
+                        System.out.println("Data Not Found.....!");
+                    else if (equalName.size() == 1){
+                        deleteContact(equalName.get(0));
+                        System.out.println("Contact data deleted....!");
+                    }else {
+                        equalName.forEach(x -> System.out.println(equalName.indexOf(x) + "  " + x.toString()));
+                        System.out.println("Enter an index to delete");
+                        int index = sc.nextInt();
+                        sc.nextLine();
+                        deleteContact(equalName.get(index));
+                        System.out.println("Cotact data deleted....!");
+                    }
+                    break;
+                case 4:
+                    System.out.println(toString()); //call tostring method for showing details
+                    break;
+                case 5:
+                    sortByOption();
+                    break;
+                case 6:
+                    return ;
+                default:
+                    System.out.println("Invalid Choice!");
+                    break;
             }
         }
-        if(flag==0) {
-            System.out.println("This name does not exists!");
+    }
+    //method for search contacts by option
+    public static void searchByOptions() {
+        System.out.println("1. Search By name");
+        System.out.println("2. Search By city");
+        System.out.println("3. Search By state");
+        System.out.println("4. Back");
+        System.out.print("Enter Your choice: ");
+        int choice =sc.nextInt();
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                System.out.print("Enter name: ");
+                String name = sc.nextLine();
+                contactList.forEach(book -> addressBook.searchByName(name).forEach(System.out::println));
+                break;
+            case 2:
+                System.out.print("Enter city: ");
+                String city = sc.nextLine();
+                contactList.forEach(book -> addressBook.searchByCity(city).forEach(System.out::println));
+                break;
+            case 3:
+                System.out.print("Enter state: ");
+                String state = sc.nextLine();
+                contactList.forEach(book -> addressBook.searchByState(state).forEach(System.out::println));
+                break;
+            case 4:
+                return;
+            default:
+                System.out.println("INVALID CHOICE!");
+        }
+    }
+    //method for view element by option
+    public static void viewByOption(Map<String, AddressBook> addressBookMap) {
+        System.out.println("1. View By name");
+        System.out.println("2. View By city");
+        System.out.println("3. View By state");
+        System.out.println("4. Back");
+        System.out.print("Enter Your choice: ");
+        int choice =sc.nextInt();
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                viewByName(nameHashMap);
+                break;
+            case 2:
+                viewByCity(cityHashMap);
+                break;
+            case 3:
+                viewByState(stateHashMap);
+                break;
+            case 4:
+                return;
+            default:
+                System.out.println("INVALID CHOICE!");
         }
     }
 
-    //method to delete a person from addressBook
-    public void deletePerson() {
-        Scanner userInput=new Scanner(System.in);
-        System.out.println("Enter name of person to be deleted?");
-        String name=userInput.nextLine();
-        int flag=0;
-        for(int i=0;i<contacts.size();i++) {
-            Person person=contacts.get(i);
-            if(name.equals(person.firstName)) {
-                System.out.println("Deleted:- "+person);
-                contacts.remove(i);
-                flag=1;
-            }
-        }
-        if(flag==0) {
-            System.out.println("This name does not exists!");
+    public static void countByOption() {
+        System.out.println("1. Count City ");
+        System.out.println("2. Count State");
+        System.out.println("3. Back ");
+        System.out.println("Enter Your Choice : ");
+        int choice = sc.nextInt();
+        sc.nextLine();
+        switch (choice){
+            case 1:
+                Map<String, Long> countCity = contactList.stream().collect(Collectors.groupingBy(e -> e.getCity(),Collectors.counting()));
+                System.out.println(countCity + "\n");
+                break;
+            case 2:
+                Map<String, Long> countState = contactList.stream().collect(Collectors.groupingBy(e -> e.getState(),Collectors.counting()));
+                System.out.println(countState + "\n");
+                break;
+            case 3:
+                return;
+            default:
+                System.out.println("Invalid Option");
         }
     }
-    //method to display persons in current addressBook
-    public void display() {
-        System.out.println("\n*****************All Contacts************************\n");
-        if(contacts.isEmpty()) {
-            System.out.println("NO CONTACTS ADDED !");
-            return;
-        }
-        contacts.stream().forEach(System.out::println);
-    }
+    public static void sortByOption(){
+        System.out.println("1. By first name");
+        System.out.println("2. By last name");
+        System.out.println("3. By city");
+        System.out.println("4. By state");
+        System.out.println("5. By zip");
+        System.out.println("6. Back");
+        System.out.print("Your choice: ");
 
-    //method to get persons in given city
-    public List<Person> getPersonsByCity(String cityName) {
-        List<Person> list = personsInCity.entrySet()
-                .stream()
-                .filter(city->city.getValue().equalsIgnoreCase(cityName))
-                .map(personInCity->personInCity.getKey())
-                .collect(Collectors.toList());
-        return list;
-    }
-
-    //method to get persons in given state
-    public List<Person> getPersonsByState(String stateName) {
-        List<Person>list = personsInState.entrySet()
-                .stream()
-                .filter(state->state.getValue().equalsIgnoreCase(stateName))
-                .map(personInState->personInState.getKey())
-                .collect(Collectors.toList());
-        return list;
-    }
-
-    //method to display persons details in given list
-    public void displayNumberOfPersonsFound(List<Person>personsList,String name) {
-        if(personsList.isEmpty()) {
-            System.out.println("\""+name+"\" does not exists !");
-        }
-        else {
-            System.out.println("\nPersons Found in "+name+" are :\n");
-            personsList.forEach(System.out::println);
+        int choice = sc.nextInt();
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                addressBook.sortBy(Contact::getfName).forEach(System.out::println);
+                break;
+            case 2:
+                addressBook.sortBy(Contact::getlName).forEach(System.out::println);
+                break;
+            case 3:
+                addressBook.sortBy(Contact::getCity).forEach(System.out::println);
+                break;
+            case 4:
+                addressBook.sortBy(Contact::getState).forEach(System.out::println);
+                break;
+            case 5:
+                addressBook.sortByZip(Contact::getZip).forEach(System.out::println);
+                break;
+            case 6:
+                return;
+            default:
+                System.out.println("INVALID CHOICE!");
         }
     }
 
-    //method to count persons by city in an addressBook
-    public void countPersonsByCity(String cityName) {
-        List<Person>personsInCity=getPersonsByCity(cityName);
-        if(personsInCity.isEmpty())
-            System.out.println("City "+cityName+" Does Not Exists !");
-        else
-            System.out.println("Total No. Of Persons Found In "+cityName.toUpperCase()+" Are :"+personsInCity.stream().count());
-    }
-
-    //method to count persons by state in an addressBook
-    public void countPersonsByState(String stateName) {
-        List<Person>personsInState=getPersonsByState(stateName);
-        if(personsInState.isEmpty())
-            System.out.println("State "+stateName+" Does Not Exists !");
-        else
-            System.out.println("Total No. Of Persons Found In "+stateName.toUpperCase()+" Are :"+personsInState.stream().count());
-    }
-
-    //method to sort person by first name and last name
-    public void sortPersonsByName() {
-        List<Person> sortedList = contacts.stream()
-                .sorted(Comparator.comparing(Person::getFirstName)
-                        .thenComparing(Person::getLastName))
-                .collect(Collectors.toList());
-        System.out.println("\n--------- SORTED LIST OF PERSONS BY NAME ------------\n");
-        sortedList.forEach(System.out::println);
-    }
-    //method to sort person by city
-    public void sortPersonsByCity() {
-        List<Person> sortedList = contacts.stream()
-                .sorted(Comparator.comparing(Person::getCity))
-                .collect(Collectors.toList());
-        System.out.println("\n--------- SORTED LIST OF PERSONS BY CITY ------------\n");
-        sortedList.forEach(System.out::println);
-
-    }
-    //method to sort person by state
-    public void sortPersonsByState() {
-        List<Person> sortedList = contacts.stream()
-                .sorted(Comparator.comparing(Person::getState))
-                .collect(Collectors.toList());
-        System.out.println("\n--------- SORTED LIST OF PERSONS BY STATE ------------\n");
-        sortedList.forEach(System.out::println);
-
-    }
-    //method to sort person by ZipCode
-    public void sortPersonsByZipCode() {
-        List<Person> sortedList = contacts.stream()
-                .sorted(Comparator.comparingInt(Person::getZipCode))
-                .collect(Collectors.toList());
-        System.out.println("\n--------- SORTED LIST OF PERSONS BY ZIP CODE ------------\n");
-        sortedList.forEach(System.out::println);
-    }
 }
