@@ -1,5 +1,6 @@
 package com.bridgelabz;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -22,5 +23,15 @@ public class AddressBookTest {
         addressBook.updateContact("Karnataka", "Niharika");
         boolean result = addressBook.checkAddressBookInSyncWithDB("Niharika");
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void givenDateRange_WhenContact_ShouldReturnEmpCount() throws SQLException{
+        addressBook = new AddressBook();
+        addressBookDataList = addressBook.readAddressBookData(AddressBook.IOService.DB_IO);
+        LocalDate startDate = LocalDate.of(2018, 02, 01);
+        LocalDate endDate = LocalDate.now();
+        addressBookDataList = addressBook.readPersonDataForDateRange(startDate, endDate);
+        Assertions.assertEquals(2, addressBookDataList.size());
     }
 }
